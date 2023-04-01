@@ -6,16 +6,24 @@ import React, { useState, useEffect } from 'react';
 import { Box, UnstyledButton } from '@mantine/core';
 import RoundButton from '../RoundButton/RoundButton';
 import { Click } from '../../types/dataTypes';
+import Plot from '../Plots/Plots';
 
 /** Counter that increments by one.
  * @returns {JSX.Element} The Counter component.
  */
 export default function Counter() {
   const [count, setCount] = useState(0);
+  const [clicks, setClicks] = useState<Click[]>([]);
   const handleClick = () => {
     let click: Click = {
-      time: new Date(),
+      time: new Date().valueOf(),
+      clicks: count,
     };
+    // Extend clicks object with current clicks.
+    // In the future, this should become the data array
+    setClicks([...clicks, click]);
+    setCount(count + 1);
+
     fetch('/api/clicks', {
       method: 'POST',
       headers: {
@@ -23,7 +31,6 @@ export default function Counter() {
       },
       body: JSON.stringify(click),
     });
-    setCount(count + 1);
   };
 
   useEffect(() => {
@@ -44,6 +51,7 @@ export default function Counter() {
       <p>
         Current count: <strong>{count}</strong>
       </p>
+      <Plot data={clicks} />
     </Box>
   );
 }
