@@ -1,3 +1,4 @@
 export interface Click {
-  time: Date;
+  time: number;
+  count: number;
 }
